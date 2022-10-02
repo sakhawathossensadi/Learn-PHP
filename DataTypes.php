@@ -18,3 +18,8 @@ echo "<br>";
 //$obj = new MyClass(); //Object
 $a1 = null; //Null
 var_dump($a1);
+echo "<br>";
+$val = 12;
+echo $val . "<br>";
+$val = [1, 2, 3];
+print_r($val);
