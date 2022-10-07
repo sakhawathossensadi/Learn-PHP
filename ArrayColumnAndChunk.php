@@ -34,7 +34,7 @@ echo "<pre>";
 
 echo "<br>";
 
-//id become 'key' and name become value
+//'id' become key and 'name' become value
 $newArray = array_column($data, 'name', 'id');
 
 echo "<pre>";
