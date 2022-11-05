@@ -61,8 +61,54 @@ class DataBase
     }
 
     //function to select from the database
-    public function select()
+    public function select($table, $rows = "*", $join = null, $where = null, $orderBy = null, $limit = null)
     {
+        if ($this->tableExist($table)) {
+            $query = "SELECT $rows FROM $table";
+            if ($join != null) {
+                $query = $query . " JOIN $join";
+            }
+            if ($where != null) {
+                $query = $query . " Where $where";
+            }
+            if ($orderBy != null) {
+                $query = $query . " ORDER BY $orderBy";
+            }
+            if ($limit != null) {
+                $query = $query . " LIMIT 0, $limit";
+            }
+
+            echo $query . "<br>";
+
+            $query = $this->mySqli->query($query);
+
+            if ($query) {
+                $this->result = $query->fetch_all(MYSQLI_ASSOC);
+
+                return true;
+            } else {
+                array_push($this->result, $this->mySqli->error);
+
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public function sqlCommand($sqlQuery)
+    {
+        $query = $this->mySqli->query($sqlQuery);
+
+        if ($query) {
+            $this->result = $query->fetch_all(MYSQLI_ASSOC);
+
+            return true;
+        } else {
+            array_push($this->result, $this->mySqli->error);
+
+            return false;
+        }
     }
 
     private function tableExist($tableName)
