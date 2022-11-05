@@ -6,6 +6,8 @@ spl_autoload_register(function ($class) {
 
 $obj = new DataBase();
 
+$limit = 2;
+
 // $obj->insert('students', ['name' => 'Sakhawat', 'city' => 'Dhaka', 'email' => 'sakhawat@gmail.com']);
 
 // print_r($obj->getResult());
@@ -20,7 +22,7 @@ $obj = new DataBase();
 //     echo $r['name'] . "<br>";
 // }
 
-// $obj->select('students', '*', null, null, null, null);
+// $obj->select('students', '*', null, null, null, 2);
 // echo "<pre>";
 // print_r($obj->getResult());
 // echo "<?pre>";
@@ -40,3 +42,10 @@ $obj = new DataBase();
 // echo "<pre>";
 // print_r($obj->getResult());
 // echo "<?pre>";
+
+$obj->select('students', '*', null, null, null, $limit);
+echo "<pre>";
+print_r($obj->getResult());
+echo "<?pre>";
+
+echo $obj->pagination('students', null, null, $limit);

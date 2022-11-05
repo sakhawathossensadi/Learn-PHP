@@ -75,7 +75,13 @@ class DataBase
                 $query = $query . " ORDER BY $orderBy";
             }
             if ($limit != null) {
-                $query = $query . " LIMIT 0, $limit";
+                if (isset($_GET['page'])) {
+                    $page = $_GET['page'];
+                } else {
+                    $page = 1;
+                }
+                $start = ($page - 1) * $limit;
+                $query = $query . " LIMIT $start, $limit";
             }
 
             echo $query . "<br>";
@@ -89,6 +95,64 @@ class DataBase
             } else {
                 array_push($this->result, $this->mySqli->error);
 
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public function pagination($table, $join = null, $where = null, $limit = null)
+    {
+        if ($this->tableExist($table)) {
+            if ($limit != null) {
+                $query = "SELECT COUNT(*) FROM $table";
+                if ($join != null) {
+                    $query = $query . " JOIN $join";
+                }
+                if ($where != null) {
+                    $query = $query . " Where $where";
+                }
+
+                $query = $this->mySqli->query($query);
+
+                $totalRecord = $query->fetch_array();
+                $totalRecord = $totalRecord[0];
+                $totalPages = ceil($totalRecord / $limit);
+
+                $url = basename($_SERVER['PHP_SELF']);
+
+                if (isset($_GET['page'])) {
+                    $page = $_GET['page'];
+                } else {
+                    $page = 1;
+                }
+
+                $output = "<ul class='pagination'>";
+
+                if ($page > 1) {
+                    $output = $output . "<li><a href='$url?page=" . ($page - 1) . "'>Prev</a></li>";
+                }
+
+                if ($totalRecord > $limit) {
+                    for ($i = 1; $i <= $totalPages; $i++) {
+                        if ($i == $page) {
+                            $cls = "class='active-class'";
+                        } else {
+                            $cls = '';
+                        }
+                        $output = $output . "<li><a $cls href='$url?page=$i'>$i</a></li>";
+                    }
+                }
+
+                if ($totalPages > $page) {
+                    $output = $output . "<li><a href='$url?page=" . ($page + 1) . "'>Next</a></li>";
+                }
+
+                $output = $output . "</ul>";
+
+                return $output;
+            } else {
                 return false;
             }
         } else {
